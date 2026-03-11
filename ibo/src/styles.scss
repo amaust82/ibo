@@ -1,0 +1,180 @@
+/* ── CSS Custom Properties — Clash of Cultures earthy stone/parchment theme ── */
+:root {
+  /* Backgrounds: warm dark browns, like aged wood & stone */
+  --bg:      #100e0a;           /* darkest — main page bg, like dark oak */
+  --surface: #1c1810;           /* panels — dark stone */
+  --surface2: #231e14;          /* slightly lighter stone for nested surfaces */
+  --border:  #3a3020;           /* warm brown border, stone-engraved look */
+  --border2: #4a3e28;           /* lighter border for hover/active states */
+
+  /* Text: parchment-warm whites */
+  --text:      #e8dfc4;         /* warm parchment off-white */
+  --text-muted: #8a7d60;        /* muted amber-brown */
+
+  /* Accent: game's signature gold */
+  --accent:     #d4a830;        /* rich historical gold */
+  --accent-dim: #a07820;        /* darker gold for hover states */
+  --accent-glow: rgba(212,168,48,.15);
+
+  /* Status colors: earthy-muted */
+  --danger:  #c44040;
+  --success: #4a8030;
+
+  /* Resource-token colors (matching physical tokens) */
+  --res-food:  #5a8a30;
+  --res-wood:  #8a5a20;
+  --res-ore:   #7a6030;
+  --res-gold:  #c0900a;
+  --res-ideas: #5070a0;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle warm vignette on the background */
+body {
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(60,40,10,.4) 0%, transparent 70%);
+}
+
+/* UI chrome (buttons, labels, inputs) stay sans-serif for readability */
+button, input, select, textarea,
+.btn, .form-input, .chip, .badge, .panel-title, .form-label, label {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  padding: .45rem .9rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: .85rem;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  transition: background .15s, border-color .15s, opacity .15s, box-shadow .15s;
+  white-space: nowrap;
+  text-decoration: none;
+  letter-spacing: .01em;
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+.btn-primary {
+  background: var(--accent);
+  color: #1a1000;
+  border-color: var(--accent-dim);
+  box-shadow: 0 1px 4px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.btn-primary:hover:not(:disabled) {
+  background: #e8bc38;
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(212,168,48,.3), inset 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--surface2);
+}
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.btn-danger:hover:not(:disabled) { background: rgba(196,64,64,.12); }
+.btn-success {
+  background: var(--success);
+  color: #e8dfc4;
+  border-color: var(--success);
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+.btn-success:hover:not(:disabled) { background: #5a9840; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: transparent;
+}
+.btn-ghost:hover:not(:disabled) { color: var(--text); background: rgba(58,48,32,.6); }
+.btn-sm { padding: .25rem .55rem; font-size: .78rem; }
+.btn-large { width: 100%; padding: .8rem; font-size: 1rem; letter-spacing: .03em; }
+
+/* ── Panels: stone depth ── */
+/* Apply box-shadow to all panel-like containers */
+[class$="-panel"]:not(.log-panel) {
+  box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
+}
+.log-panel {
+  box-shadow: 0 2px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+/* Panel titles: engraved stone feel */
+.panel-title {
+  text-shadow: 0 0 24px rgba(212,168,48,.18);
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Form inputs ── */
+.form-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: .6rem .8rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color .15s, box-shadow .15s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(212,168,48,.12);
+}
+
+/* ── Badge base (used across components) ── */
+.badge {
+  font-size: .7rem;
+  padding: .15rem .45rem;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+/* ── Modal ── */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.7);
+  display: flex; align-items: center; justify-content: center; z-index: 100;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 1.5rem;
+  min-width: 280px; max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.6);
+}
+
+/* ── Headings with serif flair ── */
+h1, h2 { font-family: 'Georgia', 'Palatino Linotype', serif; }
