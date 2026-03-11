@@ -1,0 +1,91 @@
+{
+  "configVersion": 1,
+  "timestamp": 1773261610144,
+  "index": "https://amaust82.github.io/ibo/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "https://amaust82.github.io/ibo/chunk-3G57H4CJ.js",
+        "https://amaust82.github.io/ibo/chunk-AR3CUCWP.js",
+        "https://amaust82.github.io/ibo/chunk-KEFL5YSY.js",
+        "https://amaust82.github.io/ibo/chunk-P5AYYRZU.js",
+        "https://amaust82.github.io/ibo/chunk-PHYB5TOD.js",
+        "https://amaust82.github.io/ibo/chunk-SX2YQ2CL.js",
+        "https://amaust82.github.io/ibo/favicon.ico",
+        "https://amaust82.github.io/ibo/index.html",
+        "https://amaust82.github.io/ibo/main-PAYR2IYY.js",
+        "https://amaust82.github.io/ibo/manifest.webmanifest",
+        "https://amaust82.github.io/ibo/polyfills-5CFQRCPP.js",
+        "https://amaust82.github.io/ibo/styles-2XYPMFFM.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "https://amaust82.github.io/ibo/icons/icon-128x128.png",
+        "https://amaust82.github.io/ibo/icons/icon-144x144.png",
+        "https://amaust82.github.io/ibo/icons/icon-152x152.png",
+        "https://amaust82.github.io/ibo/icons/icon-192x192.png",
+        "https://amaust82.github.io/ibo/icons/icon-384x384.png",
+        "https://amaust82.github.io/ibo/icons/icon-512x512.png",
+        "https://amaust82.github.io/ibo/icons/icon-72x72.png",
+        "https://amaust82.github.io/ibo/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "https://amaust82.github.io/ibo/chunk-3G57H4CJ.js": "3fa327554969818d56dab78612d739de94f8cabc",
+    "https://amaust82.github.io/ibo/chunk-AR3CUCWP.js": "f5fcb19e1c595f3f9f39f1dc8aeb7c563f6479b3",
+    "https://amaust82.github.io/ibo/chunk-KEFL5YSY.js": "b77d0cddfb472edc8e212b743cfb6a8b165a85dd",
+    "https://amaust82.github.io/ibo/chunk-P5AYYRZU.js": "8c29f8b3c32b97d983c708e64f020636a0c08e6e",
+    "https://amaust82.github.io/ibo/chunk-PHYB5TOD.js": "705e462d9aaa7009bd478b0f7c00bf789ca4ffe2",
+    "https://amaust82.github.io/ibo/chunk-SX2YQ2CL.js": "5b2182adf193b9dd5ee20ddb45b7be9fea2ebc15",
+    "https://amaust82.github.io/ibo/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "https://amaust82.github.io/ibo/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "https://amaust82.github.io/ibo/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
+    "https://amaust82.github.io/ibo/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
+    "https://amaust82.github.io/ibo/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
+    "https://amaust82.github.io/ibo/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "https://amaust82.github.io/ibo/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "https://amaust82.github.io/ibo/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
+    "https://amaust82.github.io/ibo/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
+    "https://amaust82.github.io/ibo/index.html": "e927359760111413d45ae892c91745f54ef28b2c",
+    "https://amaust82.github.io/ibo/main-PAYR2IYY.js": "5e12c2a90ae57066117ee6ac0a91358ff4c14fdc",
+    "https://amaust82.github.io/ibo/manifest.webmanifest": "fb653908d468ce39a2ed07a3f254c82e2decf019",
+    "https://amaust82.github.io/ibo/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
+    "https://amaust82.github.io/ibo/styles-2XYPMFFM.css": "52fe19dc075fac8328acfb7170591c6b09b2016d"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
