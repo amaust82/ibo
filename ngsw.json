@@ -1,7 +1,7 @@
 {
   "configVersion": 1,
-  "timestamp": 1773262425739,
-  "index": "/index.html",
+  "timestamp": 1773262480470,
+  "index": "https://amaust82.github.io/ibo/index.html",
   "assetGroups": [
     {
       "name": "app",
@@ -11,18 +11,18 @@
         "ignoreVary": true
       },
       "urls": [
-        "/chunk-42VC3WWY.js",
-        "/chunk-I252DTOQ.js",
-        "/chunk-MN662AGE.js",
-        "/chunk-QAI2YLYQ.js",
-        "/chunk-RCVJ6SMH.js",
-        "/chunk-XWEU56EM.js",
-        "/favicon.ico",
-        "/index.html",
-        "/main-LABWQDY4.js",
-        "/manifest.webmanifest",
-        "/polyfills-5CFQRCPP.js",
-        "/styles-2XYPMFFM.css"
+        "https://amaust82.github.io/ibo/chunk-42VC3WWY.js",
+        "https://amaust82.github.io/ibo/chunk-I252DTOQ.js",
+        "https://amaust82.github.io/ibo/chunk-MN662AGE.js",
+        "https://amaust82.github.io/ibo/chunk-QAI2YLYQ.js",
+        "https://amaust82.github.io/ibo/chunk-RCVJ6SMH.js",
+        "https://amaust82.github.io/ibo/chunk-XWEU56EM.js",
+        "https://amaust82.github.io/ibo/favicon.ico",
+        "https://amaust82.github.io/ibo/index.html",
+        "https://amaust82.github.io/ibo/main-LABWQDY4.js",
+        "https://amaust82.github.io/ibo/manifest.webmanifest",
+        "https://amaust82.github.io/ibo/polyfills-5CFQRCPP.js",
+        "https://amaust82.github.io/ibo/styles-2XYPMFFM.css"
       ],
       "patterns": []
     },
@@ -34,40 +34,40 @@
         "ignoreVary": true
       },
       "urls": [
-        "/icons/icon-128x128.png",
-        "/icons/icon-144x144.png",
-        "/icons/icon-152x152.png",
-        "/icons/icon-192x192.png",
-        "/icons/icon-384x384.png",
-        "/icons/icon-512x512.png",
-        "/icons/icon-72x72.png",
-        "/icons/icon-96x96.png"
+        "https://amaust82.github.io/ibo/icons/icon-128x128.png",
+        "https://amaust82.github.io/ibo/icons/icon-144x144.png",
+        "https://amaust82.github.io/ibo/icons/icon-152x152.png",
+        "https://amaust82.github.io/ibo/icons/icon-192x192.png",
+        "https://amaust82.github.io/ibo/icons/icon-384x384.png",
+        "https://amaust82.github.io/ibo/icons/icon-512x512.png",
+        "https://amaust82.github.io/ibo/icons/icon-72x72.png",
+        "https://amaust82.github.io/ibo/icons/icon-96x96.png"
       ],
       "patterns": []
     }
   ],
   "dataGroups": [],
   "hashTable": {
-    "/chunk-42VC3WWY.js": "a70cb1da5dcf9fc913301a6e223529789c331c0a",
-    "/chunk-I252DTOQ.js": "80b090c1f647c0d4484eec7fd29a12ad6c63c608",
-    "/chunk-MN662AGE.js": "1ea1ee9bbedbb20b8df7dcd61a7f9bdfa77b12d3",
-    "/chunk-QAI2YLYQ.js": "834fc2dde6f1333373f239695f302dd29dfb5e9a",
-    "/chunk-RCVJ6SMH.js": "390b55fb848a36e092df4a812aec32b3a7aa635a",
-    "/chunk-XWEU56EM.js": "dea83d36b22a9c1b81b852e7cd2dd6308f79857c",
-    "/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
-    "/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
-    "/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
-    "/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
-    "/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
-    "/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
-    "/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
-    "/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
-    "/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "/index.html": "b7ff2e4403b957f0f4be7bab1dcd301392c88190",
-    "/main-LABWQDY4.js": "a56b07349920bb95ba6b3f4a1148bce3c64881ef",
-    "/manifest.webmanifest": "fb653908d468ce39a2ed07a3f254c82e2decf019",
-    "/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
-    "/styles-2XYPMFFM.css": "52fe19dc075fac8328acfb7170591c6b09b2016d"
+    "https://amaust82.github.io/ibo/chunk-42VC3WWY.js": "a70cb1da5dcf9fc913301a6e223529789c331c0a",
+    "https://amaust82.github.io/ibo/chunk-I252DTOQ.js": "80b090c1f647c0d4484eec7fd29a12ad6c63c608",
+    "https://amaust82.github.io/ibo/chunk-MN662AGE.js": "1ea1ee9bbedbb20b8df7dcd61a7f9bdfa77b12d3",
+    "https://amaust82.github.io/ibo/chunk-QAI2YLYQ.js": "834fc2dde6f1333373f239695f302dd29dfb5e9a",
+    "https://amaust82.github.io/ibo/chunk-RCVJ6SMH.js": "390b55fb848a36e092df4a812aec32b3a7aa635a",
+    "https://amaust82.github.io/ibo/chunk-XWEU56EM.js": "dea83d36b22a9c1b81b852e7cd2dd6308f79857c",
+    "https://amaust82.github.io/ibo/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "https://amaust82.github.io/ibo/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "https://amaust82.github.io/ibo/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
+    "https://amaust82.github.io/ibo/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
+    "https://amaust82.github.io/ibo/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
+    "https://amaust82.github.io/ibo/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "https://amaust82.github.io/ibo/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "https://amaust82.github.io/ibo/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
+    "https://amaust82.github.io/ibo/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
+    "https://amaust82.github.io/ibo/index.html": "c9c28478b88046bc3a7f0e7e2444aed5d28d89a7",
+    "https://amaust82.github.io/ibo/main-LABWQDY4.js": "a56b07349920bb95ba6b3f4a1148bce3c64881ef",
+    "https://amaust82.github.io/ibo/manifest.webmanifest": "fb653908d468ce39a2ed07a3f254c82e2decf019",
+    "https://amaust82.github.io/ibo/polyfills-5CFQRCPP.js": "f2241e9a25858f895ce299d15f6f22e849e2fd72",
+    "https://amaust82.github.io/ibo/styles-2XYPMFFM.css": "52fe19dc075fac8328acfb7170591c6b09b2016d"
   },
   "navigationUrls": [
     {
