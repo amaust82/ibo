@@ -18,13 +18,12 @@ interface CardOption {
 }
 
 const CARD_OPTIONS: CardOption[] = [
-  { icon: ActionCardIcon.Advance1,         emoji: '⚙️', label: 'Advance I',        action: 'ADVANCE' },
-  { icon: ActionCardIcon.Advance2,         emoji: '⚙️', label: 'Advance II',       action: 'ADVANCE' },
-  { icon: ActionCardIcon.Recruit,          emoji: '🐴', label: 'Recruit',          action: 'RECRUIT' },
-  { icon: ActionCardIcon.Attack,           emoji: '⚔️', label: 'Attack',           action: 'ATTACK' },
-  { icon: ActionCardIcon.Construct,        emoji: '○',  label: 'No Icon (Const.)', action: 'CONSTRUCT' },
-  { icon: ActionCardIcon.InfluenceCulture, emoji: '🎭', label: 'Infl. Culture',    action: 'INFLUENCE CULTURE' },
-  { icon: ActionCardIcon.CivSpecific,      emoji: '🌟', label: 'Civ Specific',     action: 'CIV SPECIFIC' },
+  { icon: ActionCardIcon.Advance1, emoji: '⚙️', label: 'Barbarians Move', action: 'ADVANCE' },
+  { icon: ActionCardIcon.Recruit, emoji: '🐴', label: 'Barbarians Spawn', action: 'RECRUIT' },
+  { icon: ActionCardIcon.Attack, emoji: '⚔️', label: 'Pirates Spawn', action: 'ATTACK' },
+  { icon: ActionCardIcon.Construct, emoji: '○', label: 'No Icon', action: 'CONSTRUCT' },
+  { icon: ActionCardIcon.InfluenceCulture, emoji: '🎭', label: 'Exhausted Land', action: 'INFLUENCE CULTURE' },
+  { icon: ActionCardIcon.CivSpecific, emoji: '🌟', label: 'Gold Mine', action: 'CIV SPECIFIC' },
 ];
 
 // ─── Phase state machine ──────────────────────────────────────────────────────
@@ -333,7 +332,7 @@ type Phase =
     .card-option:hover { border-color: var(--accent); }
     .card-option.selected { border-color: var(--accent); background: rgba(240,192,64,.1); }
     .co-emoji { font-size: 1.4rem; }
-    .co-label { font-size: .72rem; font-weight: 600; text-align: center; }
+    .co-label { font-size: .72rem; font-weight: 600; text-align: center; color: var(--text) }
     .co-action { font-size: .62rem; color: var(--text-muted); text-align: center; }
     /* Step log */
     .current-turn { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
@@ -376,9 +375,9 @@ export class TurnExecutorComponent {
 
   // Per-card draw state
   drawnCardForSlot = signal<ActionCardIcon | null>(null);
-  rolledCard       = signal<ActionCardIcon | null>(null);
-  rolledDie        = signal<number | null>(null);
-  manualSelection  = signal<ActionCardIcon | null>(null);
+  rolledCard = signal<ActionCardIcon | null>(null);
+  rolledDie = signal<number | null>(null);
+  manualSelection = signal<ActionCardIcon | null>(null);
 
   // Accumulated cards for this turn
   resolvedCards = signal<ActionCardIcon[]>([]);
@@ -408,7 +407,7 @@ export class TurnExecutorComponent {
     return `Deck: ${s.deckPile.length} | Discard: ${s.discardPile.length}`;
   });
 
-  constructor(private ai: IboAiService) {}
+  constructor(private ai: IboAiService) { }
 
   // ── Public helpers ───────────────────────────────────────────────────────
   cardEmoji(icon: ActionCardIcon): string { return CARD_ICON_EMOJI[icon]; }
@@ -453,7 +452,7 @@ export class TurnExecutorComponent {
       // Map d6 → card icon (same distribution as deck: 1-2=Adv, 3=Rec, 4=Att, 5=Con, 6=IC)
       const map: Record<number, ActionCardIcon> = {
         1: ActionCardIcon.Advance1, 2: ActionCardIcon.Advance2,
-        3: ActionCardIcon.Recruit,  4: ActionCardIcon.Attack,
+        3: ActionCardIcon.Recruit, 4: ActionCardIcon.Attack,
         5: ActionCardIcon.Construct, 6: ActionCardIcon.InfluenceCulture,
       };
       this.rolledCard.set(map[die]);
@@ -569,8 +568,8 @@ export class TurnExecutorComponent {
   private cardsThisTurn(): number {
     const { difficulty, currentAge } = this.game();
     const table: Record<string, number[]> = {
-      Easy:   [1,1,1,2,2,3], Easier: [1,1,2,2,2,3],
-      Normal: [1,1,2,2,3,3], Harder: [1,2,2,2,3,3], Hard: [1,2,2,3,3,3],
+      Easy: [1, 1, 1, 2, 2, 3], Easier: [1, 1, 2, 2, 2, 3],
+      Normal: [1, 1, 2, 2, 3, 3], Harder: [1, 2, 2, 2, 3, 3], Hard: [1, 2, 2, 3, 3, 3],
     };
     return table[difficulty]?.[currentAge - 1] ?? 1;
   }

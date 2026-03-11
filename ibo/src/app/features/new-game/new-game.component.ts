@@ -244,7 +244,7 @@ import { CIV_LEADERS, Leader } from '../../core/data/leaders.data';
     .draw-mode-btn:hover { border-color: var(--text-muted); }
     .draw-mode-btn.active { border-color: var(--accent); background: rgba(240,192,64,.06); }
     .dm-icon { font-size: 1.4rem; }
-    .dm-name { font-size: .85rem; font-weight: 700; }
+    .dm-name { font-size: .85rem; font-weight: 700; color: var(--text); }
     .dm-desc { font-size: .72rem; color: var(--text-muted); text-align: center; }
     .draw-mode-note { font-size: .82rem; color: var(--text-muted); display: flex; align-items: center; gap: .4rem; }
     .draw-mode-note label { display: flex; align-items: center; gap: .4rem; }
@@ -255,16 +255,16 @@ export class NewGameComponent {
   difficulties = Object.values(Difficulty);
 
   drawModes: { value: CardDrawMode; icon: string; label: string; desc: string }[] = [
-    { value: 'deck',   icon: '🂠', label: 'Deck',   desc: '42-card pile, tracks draws' },
-    { value: 'roll',   icon: '🎲', label: 'Die Roll', desc: 'Roll d6 each card (no tracking)' },
-    { value: 'manual', icon: '✋', label: 'Manual',  desc: 'You enter each card icon' },
+    { value: 'deck', icon: '🂠', label: 'Deck', desc: '42-card pile, tracks draws' },
+    { value: 'roll', icon: '🎲', label: 'Die Roll', desc: 'Roll d6 each card (no tracking)' },
+    { value: 'manual', icon: '✋', label: 'Manual', desc: 'You enter each card icon' },
   ];
 
   gameName = '';
   shorterGame = false;
   includeCivSpecific = false;
   selectedDifficulty = signal<Difficulty>(Difficulty.Normal);
-  selectedDrawMode   = signal<CardDrawMode>('deck');
+  selectedDrawMode = signal<CardDrawMode>('deck');
   selectedCivId = signal<string | null>(null);
   selectedLeaderId = signal<string>('none');
 
@@ -288,7 +288,7 @@ export class NewGameComponent {
     private db: DbService,
     private gameState: GameStateService,
     private router: Router,
-  ) {}
+  ) { }
 
   back() {
     this.router.navigate(['/']);
