@@ -10,6 +10,10 @@ This is our local master plan for the Clash of Cultures IBO companion app. We wi
 - `[/]` In Progress
 - `[x]` Completed
 
+## Helpful Resources
+- [Clash of Cultures Rulebook PDF](d:\Projects\ibo\.ai\resources\Clash-of-Cultures---Rulebook---WEB---2021-02-26-compressed.pdf)
+- [IBO Opponent Rulebook](d:\Projects\ibo\.ai\resources\CoC_ME_Solo_Instructions_v1_6.pdf)
+
 ### Phase 1: Styling Foundation & Dual-Theme Toggler
 - [x] Setup `src/app.css` with HSL variables for both themes (Obsidian Dark & Imperial Parchment Light)
 - [x] Add modern touch-friendly CSS reset
@@ -17,11 +21,11 @@ This is our local master plan for the Clash of Cultures IBO companion app. We wi
 - [x] Build the decoupled, media-agnostic `<GameToken />` vector component (supports both vectors and image pivots)
 
 ### Phase 2: Decoupled TS IBO Rules Engine (Pure Library)
-- [ ] Write strict TypeScript type interfaces (`src/lib/ibo-engine/types.ts`)
-- [ ] Build core `IboEngine` class managing standard board game rules and action phases (`src/lib/ibo-engine/engine.ts`)
-- [ ] Implement simulated 3-dice advance rollers with completed category priority logic
-- [ ] Code custom rule overlays for first 4 civilizations: **Rome, Greece, China, and Vikings**
-- [ ] Write unit tests (`engine.spec.ts`) to verify engine ruleset accuracy
+- [x] Write strict TypeScript type interfaces (`src/lib/ibo-engine/types.ts`)
+- [x] Build core `IboEngine` class managing standard board game rules and action phases (`src/lib/ibo-engine/engine.ts`)
+- [x] Implement simulated 3-dice advance rollers with completed category priority logic
+- [x] Code custom rule overlays for first 4 civilizations: **Rome, Greece, China, and Vikings**
+- [x] Write unit tests (`engine.spec.ts`) to verify engine ruleset accuracy
 
 ### Phase 3: Reactive Store & Session Autosave
 - [ ] Build Svelte Store wrapper (`src/stores/iboStore.ts`)
