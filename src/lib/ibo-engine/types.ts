@@ -37,6 +37,7 @@ export interface CityState {
   structures: StructureType[];
   isAngry: boolean;
   productionType?: ResourceType; // e.g., Wood city, Ore city
+  playerInfluenceCount: number;
 }
 
 export interface ScaleSlot {
@@ -83,4 +84,9 @@ export interface IboState {
   advances: string[]; // Researched advance names (e.g. "Priesthood")
   actionLog: string[];
   tutorialMode: boolean;
+  objectivesCompleted: number;
+  iboInfluenceOnPlayer: number;
+  barbariansDefeated: number;
+  leadersEnabled: boolean;
+  leaderName: string | null;
 }

@@ -64,6 +64,27 @@ export function getStructureForCategory(category: string): StructureType | null 
   return null;
 }
 
+export function getSignatureLeader(civilization: string): string | null {
+  const leaders: Record<string, string> = {
+    Rome: 'Julius Caesar',
+    Greece: 'Leonidas',
+    China: 'Qin Shi Huang',
+    Vikings: 'Ragnar Lodbrok',
+    Aztecs: 'Montezuma',
+    Babylonia: 'Hammurabi',
+    Carthage: 'Hannibal Barca',
+    Celts: 'Boudica',
+    Egypt: 'Cleopatra',
+    Huns: 'Attila',
+    India: 'Ashoka',
+    Japan: 'Oda Nobunaga',
+    Maya: 'Pacal the Great',
+    Persia: 'Cyrus the Great',
+    Phoenicia: 'Hiram I'
+  };
+  return leaders[civilization] || null;
+}
+
 export class IboEngine {
   private _state!: IboState;
   private civHandler!: CivilizationHandler;
@@ -72,16 +93,28 @@ export class IboEngine {
     gameLength: GameLength,
     difficulty: DifficultyLevel,
     civilization: string,
-    tutorialMode?: boolean
+    tutorialMode?: boolean,
+    leadersEnabled?: boolean
   ) {
-    this.initialize(gameLength, difficulty, civilization, tutorialMode);
+    this.initialize(gameLength, difficulty, civilization, tutorialMode, leadersEnabled);
   }
 
   /**
    * Loads an existing state (e.g. from local storage reload).
    */
   public loadState(state: IboState): void {
-    this._state = state;
+    this._state = {
+      ...state,
+      objectivesCompleted: state.objectivesCompleted ?? 0,
+      iboInfluenceOnPlayer: state.iboInfluenceOnPlayer ?? 0,
+      barbariansDefeated: state.barbariansDefeated ?? 0,
+      leadersEnabled: state.leadersEnabled ?? false,
+      leaderName: state.leaderName ?? null,
+      cities: state.cities.map((city) => ({
+        playerInfluenceCount: city.playerInfluenceCount ?? 0,
+        ...city
+      }))
+    };
     this.civHandler = getCivHandler(state.civilization);
   }
 
@@ -92,7 +125,8 @@ export class IboEngine {
     gameLength: GameLength,
     difficulty: DifficultyLevel,
     civilization: string,
-    tutorialMode: boolean = false
+    tutorialMode: boolean = false,
+    leadersEnabled: boolean = false
   ): void {
     const validCivs = [
       'Rome', 'Greece', 'China', 'Vikings', 'Aztecs', 'Babylonia', 
@@ -122,7 +156,8 @@ export class IboEngine {
       mood: 'Happy',
       structures: ['Settlement'],
       isAngry: false,
-      productionType: 'Food'
+      productionType: 'Food',
+      playerInfluenceCount: 0
     };
 
     // Starting resource pool
@@ -138,6 +173,7 @@ export class IboEngine {
     const advances = ['Farming', 'Mining'];
 
     const initialMaxActions = getMaxActions(difficulty, 1);
+    const leaderName = leadersEnabled ? getSignatureLeader(civType) : null;
 
     this._state = {
       gameLength,
@@ -152,7 +188,12 @@ export class IboEngine {
       cities: [startingCity],
       advances,
       actionLog: ['Solo Game Initialized. Pre-researched: Farming, Mining. Scale initialized.'],
-      tutorialMode
+      tutorialMode,
+      objectivesCompleted: 0,
+      iboInfluenceOnPlayer: 0,
+      barbariansDefeated: 0,
+      leadersEnabled,
+      leaderName
     };
 
     // Run civ-specific wizard or setup overrides
@@ -240,7 +281,8 @@ export class IboEngine {
       mood: 'Neutral',
       structures: ['Settlement'],
       isAngry: false,
-      productionType
+      productionType,
+      playerInfluenceCount: 0
     };
 
     this._state.cities.push(newCity);

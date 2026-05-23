@@ -89,7 +89,7 @@ class IboStoreManager {
       const parsedState = JSON.parse(prevStateStr) as IboState;
       
       // Re-instantiate engine and load the historical snapshot
-      this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode);
+      this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode, parsedState.leadersEnabled);
       this.engine.loadState(parsedState);
       
       // Update reactive UI bindings and local storage
@@ -121,9 +121,9 @@ class IboStoreManager {
   /**
    * Initializes a brand-new solo IBO game state and registers a named slot.
    */
-  public newGame(gameLength: GameLength, difficulty: DifficultyLevel, civilization: string, tutorialMode: boolean = false) {
+  public newGame(gameLength: GameLength, difficulty: DifficultyLevel, civilization: string, tutorialMode: boolean = false, leadersEnabled: boolean = false) {
     this.history = []; // Reset history
-    this.engine = new IboEngine(gameLength, difficulty, civilization, tutorialMode);
+    this.engine = new IboEngine(gameLength, difficulty, civilization, tutorialMode, leadersEnabled);
     
     // Generate a default slot ID and name
     const timestampStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -204,7 +204,7 @@ class IboStoreManager {
       if (saved) {
         const parsedState = JSON.parse(saved) as IboState;
         this.history = []; // Reset history stack for the new active session
-        this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false);
+        this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false, parsedState.leadersEnabled || false);
         this.engine.loadState(parsedState);
         this.state = parsedState;
         
@@ -252,7 +252,7 @@ class IboStoreManager {
         const saved = localStorage.getItem(`${SLOT_STATE_PREFIX}${activeSlotId}`);
         if (saved) {
           const parsedState = JSON.parse(saved) as IboState;
-          this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false);
+          this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false, parsedState.leadersEnabled || false);
           this.engine.loadState(parsedState);
           this.state = parsedState;
           this.activeSlotId = activeSlotId;
@@ -264,7 +264,7 @@ class IboStoreManager {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsedState = JSON.parse(saved) as IboState;
-        this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false);
+        this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization, parsedState.tutorialMode || false, parsedState.leadersEnabled || false);
         this.engine.loadState(parsedState);
         this.state = parsedState;
         
@@ -464,6 +464,70 @@ class IboStoreManager {
     if (!this.engine) return;
     this.engine.log(msg);
     this.syncState();
+  }
+
+  /**
+   * Adds scored Objective VP to the IBO campaign profile.
+   */
+  public addObjectiveVp(amount: number) {
+    if (!this.engine || !this.state) return;
+    this.commitToHistory();
+    this.state.objectivesCompleted = (this.state.objectivesCompleted || 0) + amount;
+    // Sync with engine's state structure
+    const rawState = (this.engine as any)._state;
+    if (rawState) {
+      rawState.objectivesCompleted = this.state.objectivesCompleted;
+    }
+    this.saveToStorage();
+    this.log(`[STATUS PHASE]: Added ${amount} Objective VPs to IBO scored card deck (Total VPs: ${this.state.objectivesCompleted}).`);
+  }
+
+  /**
+   * Updates player influence cubes count in an IBO city.
+   */
+  public updatePlayerInfluence(cityId: string, amount: number) {
+    if (!this.engine || !this.state) return;
+    this.commitToHistory();
+    const city = this.state.cities.find((c) => c.id === cityId);
+    if (city) {
+      city.playerInfluenceCount = Math.max(0, (city.playerInfluenceCount || 0) + amount);
+      const rawCity = (this.engine as any)._state.cities.find((c: any) => c.id === cityId);
+      if (rawCity) {
+        rawCity.playerInfluenceCount = city.playerInfluenceCount;
+      }
+      this.saveToStorage();
+      this.log(`[INFLUENCE]: Player influence cubes in ${city.name} updated by ${amount >= 0 ? '+' : ''}${amount}. Current: ${city.playerInfluenceCount}`);
+    }
+  }
+
+  /**
+   * Updates IBO influence cubes count placed on player's cities.
+   */
+  public updateIboInfluenceOnPlayer(amount: number) {
+    if (!this.engine || !this.state) return;
+    this.commitToHistory();
+    this.state.iboInfluenceOnPlayer = Math.max(0, (this.state.iboInfluenceOnPlayer || 0) + amount);
+    const rawState = (this.engine as any)._state;
+    if (rawState) {
+      rawState.iboInfluenceOnPlayer = this.state.iboInfluenceOnPlayer;
+    }
+    this.saveToStorage();
+    this.log(`[INFLUENCE]: IBO influence cubes placed on player cities updated by ${amount >= 0 ? '+' : ''}${amount}. Current: ${this.state.iboInfluenceOnPlayer}`);
+  }
+
+  /**
+   * Updates count of defeated barbarian armies.
+   */
+  public updateBarbariansDefeated(amount: number) {
+    if (!this.engine || !this.state) return;
+    this.commitToHistory();
+    this.state.barbariansDefeated = Math.max(0, (this.state.barbariansDefeated || 0) + amount);
+    const rawState = (this.engine as any)._state;
+    if (rawState) {
+      rawState.barbariansDefeated = this.state.barbariansDefeated;
+    }
+    this.saveToStorage();
+    this.log(`[MILITARY]: Barbarian armies defeated by IBO updated by ${amount >= 0 ? '+' : ''}${amount}. Total: ${this.state.barbariansDefeated}`);
   }
 }
 

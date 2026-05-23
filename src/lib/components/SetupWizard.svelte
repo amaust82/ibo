@@ -116,9 +116,10 @@
   };
 
   let selectedTutorial = $state(false);
+  let selectedLeaders = $state(false);
 
   function handleStart() {
-    iboStore.newGame(selectedLength, selectedDifficulty, selectedCiv, selectedTutorial);
+    iboStore.newGame(selectedLength, selectedDifficulty, selectedCiv, selectedTutorial, selectedLeaders);
   }
 
   // Visualizer cycle state
@@ -229,21 +230,35 @@
     </div>
   </div>
 
-  <!-- Onboarding Tutorial Mode Card -->
-  <div class="wizard-card flex flex-col gap-sm" style="background: linear-gradient(135deg, var(--card-bg-elevated) 0%, rgba(212, 175, 55, 0.02) 100%); border-color: rgba(212, 175, 55, 0.15); margin-bottom: 1.5rem;">
-    <div class="flex justify-between align-center" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
-      <div style="text-align: left;">
-        <h3 style="display: flex; align-items: center; gap: 0.4rem; margin: 0; font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-color);">🎓 Dynamic Mentor & Tutorial Guide</h3>
-        <p class="section-desc" style="margin: 0.15rem 0 0 0; font-size: 0.8rem; color: var(--text-muted);">Activates step-by-step guidance on your dashboard to teach IBO rules as you play.</p>
+  <!-- Onboarding & Leaders Setup Row -->
+  <div class="wizard-grid" style="margin-bottom: 1.5rem;">
+    <!-- Onboarding Guide -->
+    <div class="wizard-card flex flex-col justify-between gap-sm" style="background: linear-gradient(135deg, var(--card-bg-elevated) 0%, rgba(212, 175, 55, 0.02) 100%); border-color: rgba(212, 175, 55, 0.15);">
+      <div>
+        <h3 style="display: flex; align-items: center; gap: 0.4rem; margin: 0; font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-color);">🎓 Onboarding Guide</h3>
+        <p class="section-desc" style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: var(--text-muted);">Activates step-by-step guidance on your dashboard to teach solo rules as you play.</p>
       </div>
-      
-      <!-- Toggle button or checkbox -->
       <button 
-        class="btn btn-secondary flex align-center gap-xs" 
-        style="border-color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--border-color)'}; color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--text-color)'}; font-weight: 700; font-family: var(--font-heading); padding: 0.5rem 1rem; border-radius: var(--border-radius-md);"
+        class="btn btn-secondary flex align-center justify-center gap-xs" 
+        style="width: 100%; margin-top: 0.5rem; border-color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--border-color)'}; color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--text-color)'}; font-weight: 700; font-family: var(--font-heading); padding: 0.6rem 1rem; border-radius: var(--border-radius-md);"
         onclick={() => selectedTutorial = !selectedTutorial}
       >
         {selectedTutorial ? '🎓 ONBOARDING ACTIVE' : '🎓 GUIDE INACTIVE'}
+      </button>
+    </div>
+
+    <!-- Leaders Expansion -->
+    <div class="wizard-card flex flex-col justify-between gap-sm" style="background: linear-gradient(135deg, var(--card-bg-elevated) 0%, rgba(212, 175, 55, 0.02) 100%); border-color: rgba(212, 175, 55, 0.15);">
+      <div>
+        <h3 style="display: flex; align-items: center; gap: 0.4rem; margin: 0; font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-color);">👑 Leaders Expansion</h3>
+        <p class="section-desc" style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: var(--text-muted);">Assigns a civilization-specific historical leader with unique boardless tactical traits.</p>
+      </div>
+      <button 
+        class="btn btn-secondary flex align-center justify-center gap-xs" 
+        style="width: 100%; margin-top: 0.5rem; border-color: {selectedLeaders ? 'var(--accent-gold)' : 'var(--border-color)'}; color: {selectedLeaders ? 'var(--accent-gold)' : 'var(--text-color)'}; font-weight: 700; font-family: var(--font-heading); padding: 0.6rem 1rem; border-radius: var(--border-radius-md);"
+        onclick={() => selectedLeaders = !selectedLeaders}
+      >
+        {selectedLeaders ? '👑 LEADERS ENABLED' : '👑 LEADERS DISABLED'}
       </button>
     </div>
   </div>
