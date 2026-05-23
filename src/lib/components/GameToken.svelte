@@ -3,7 +3,7 @@
   // Uses Svelte 5 runes for declaration.
 
   interface Props {
-    name: 'gold' | 'food' | 'ideas' | 'wood' | 'ore' | 'settlement' | 'temple' | 'fortress' | 'port' | 'infantry' | 'cavalry' | 'elephant' | 'ship';
+    name: 'gold' | 'food' | 'ideas' | 'wood' | 'ore' | 'settlement' | 'temple' | 'fortress' | 'port' | 'infantry' | 'cavalry' | 'elephant' | 'ship' | 'academy' | 'market' | 'obelisk' | 'observatory';
     size?: number;
     color?: string;
     imgSrc?: string;
@@ -32,7 +32,11 @@
     infantry: 'var(--accent-crimson)',
     cavalry: 'var(--accent-gold)',
     elephant: 'var(--accent-bronze)',
-    ship: 'var(--accent-bronze)'
+    ship: 'var(--accent-bronze)',
+    academy: 'var(--accent-olive)',
+    market: 'var(--accent-gold)',
+    obelisk: 'var(--accent-bronze)',
+    observatory: 'var(--text-secondary)'
   };
 
   let tokenColor = $derived(color || defaultColors[name] || 'currentColor');
@@ -106,6 +110,19 @@
         {:else if name === 'ship'}
           <!-- Trireme Greek/Roman Galley -->
           <path d="M21.9 11.1c-.2-.5-.7-.9-1.3-.9H16L13.5 5h-3L8 10.2H3.4c-.6 0-1.1.4-1.3.9-.2.5-.1 1.1.3 1.5l2.5 2.5C5.3 15.6 6 16 6.8 16h10.4c.8 0 1.5-.4 1.9-.9l2.5-2.5c.4-.4.5-1 .3-1.5zM12 6.5l1.5 3.7h-3L12 6.5zm-5 8.7H5.5l-.8-.8h1.5l.8.8zm3.5 0H9l-.8-.8h1.5l.8.8zm3.5 0h-1.5l-.8-.8h1.5l.8.8zm3.5 0H16l-.8-.8h1.5l.8.8z"/>
+        {:else if name === 'academy'}
+          <!-- Rolled Hat of Wisdom / Academy building -->
+          <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+          <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/>
+        {:else if name === 'market'}
+          <!-- Scale balance for Economy -->
+          <path d="M12 2a10 10 0 1010 10A10 10 0 0012 2zm1 14.5h-2v-1h2zm1.07-4.75a2.5 2.5 0 00-.77-1.68c-.68-.61-1.3-1-1.3-1.63 0-.49.33-.8.8-.8a.85.85 0 01.8.6l1.7-.5A2.43 2.43 0 0011.8 9V8h-1.5v1A2.52 2.52 0 009.5 12.1a2.38 2.38 0 00.75 1.63c.69.61 1.25 1 1.25 1.57 0 .58-.45.85-.92.85A1 1 0 019.62 15l-1.8.46a2.82 2.82 0 002.48 2v1h1.5v-1a2.6 2.6 0 002.27-2.71z"/>
+        {:else if name === 'obelisk'}
+          <!-- Tall Monumental Obelisk Pillar -->
+          <path d="M12 2L9 8h6l-3-6zm-2.5 7l-1 13h7l-1-13h-5z"/>
+        {:else if name === 'observatory'}
+          <!-- Stars Dome / Observatory telescope -->
+          <path d="M12 2a10 10 0 00-9.9 8.5L5.7 13h12.6l3.6-2.5A10 10 0 0012 2zm-1.5 5.5a1.5 1.5 0 111.5 1.5 1.5 1.5 0 01-1.5-1.5zm8.5 10.5H3v2a2 2 0 002 2h14a2 2 0 002-2v-2z"/>
         {/if}
       {/if}
     </svg>

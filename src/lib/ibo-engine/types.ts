@@ -71,6 +71,7 @@ export interface IboState {
   difficulty: DifficultyLevel;
   civilization: CivilizationType;
   currentAge: number; // 1 to 6 (or 4)
+  currentRound: number; // 1 to 3 rounds in an Age
   currentAction: number; // Active action count in current turn
   maxActionsPerTurn: number;
   resources: ResourcePool;

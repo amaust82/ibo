@@ -6,6 +6,9 @@ const STORAGE_KEY = 'clash-of-cultures-ibo-save';
 class IboStoreManager {
   private engine: IboEngine | null = null;
   
+  // History stack for the robust undo system
+  private history: string[] = [];
+  
   // Svelte 5 reactive state
   public state = $state<IboState | null>(null);
 
@@ -24,9 +27,42 @@ class IboStoreManager {
   }
 
   /**
+   * Commits the current active state to the history stack prior to mutations.
+   */
+  private commitToHistory() {
+    if (this.state) {
+      this.history.push(JSON.stringify(this.state));
+      // Cap at 20 operations to manage memory
+      if (this.history.length > 20) {
+        this.history.shift();
+      }
+    }
+  }
+
+  /**
+   * Reverts the last state mutation.
+   */
+  public undo() {
+    if (this.history.length > 0) {
+      const prevStateStr = this.history.pop()!;
+      const parsedState = JSON.parse(prevStateStr) as IboState;
+      
+      // Re-instantiate engine and load the historical snapshot
+      this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization);
+      this.engine.loadState(parsedState);
+      
+      // Update reactive UI bindings and local storage
+      this.state = parsedState;
+      this.saveToStorage();
+      this.log('[UNDO]: Reverted last action.');
+    }
+  }
+
+  /**
    * Initializes a brand-new solo IBO game state.
    */
   public newGame(gameLength: GameLength, difficulty: DifficultyLevel, civilization: string) {
+    this.history = []; // Reset history
     this.engine = new IboEngine(gameLength, difficulty, civilization);
     this.syncState();
   }
@@ -39,7 +75,6 @@ class IboStoreManager {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsedState = JSON.parse(saved) as IboState;
-        // Instantiate a dummy engine and load the parsed state
         this.engine = new IboEngine(parsedState.gameLength, parsedState.difficulty, parsedState.civilization);
         this.engine.loadState(parsedState);
         this.state = parsedState;
@@ -69,6 +104,7 @@ class IboStoreManager {
   public clearGame() {
     this.engine = null;
     this.state = null;
+    this.history = [];
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (e) {
@@ -81,6 +117,7 @@ class IboStoreManager {
    */
   public addResource(type: ResourceType, amount: number) {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.addResource(type, amount);
     this.syncState();
   }
@@ -90,6 +127,7 @@ class IboStoreManager {
    */
   public spendResource(type: ResourceType, amount: number): boolean {
     if (!this.engine) return false;
+    this.commitToHistory();
     const success = this.engine.spendResource(type, amount);
     this.syncState();
     return success;
@@ -100,6 +138,7 @@ class IboStoreManager {
    */
   public executeAdvance(customDice?: [number, number, number]) {
     if (!this.engine) return null;
+    this.commitToHistory();
     const resolution = this.engine.executeAdvanceAction(customDice);
     this.syncState();
     return resolution;
@@ -110,6 +149,7 @@ class IboStoreManager {
    */
   public executeFoundCity(name: string, productionType?: ResourceType): boolean {
     if (!this.engine) return false;
+    this.commitToHistory();
     const success = this.engine.executeFoundCityAction(name, productionType);
     this.syncState();
     return success;
@@ -120,6 +160,7 @@ class IboStoreManager {
    */
   public executeConstruct(cityId: string): boolean {
     if (!this.engine) return false;
+    this.commitToHistory();
     const success = this.engine.executeConstructAction(cityId);
     this.syncState();
     return success;
@@ -130,6 +171,7 @@ class IboStoreManager {
    */
   public addStructureToScale(structure: StructureType): boolean {
     if (!this.engine) return false;
+    this.commitToHistory();
     const success = this.engine.addStructureToScale(structure);
     this.syncState();
     return success;
@@ -140,6 +182,7 @@ class IboStoreManager {
    */
   public updateCityMood(cityId: string, mood: CityMood) {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.updateCityMood(cityId, mood);
     this.syncState();
   }
@@ -149,7 +192,18 @@ class IboStoreManager {
    */
   public executeRecruit() {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.executeRecruitAction();
+    this.syncState();
+  }
+
+  /**
+   * Manually triggers next Round transition within current Age.
+   */
+  public nextRound() {
+    if (!this.engine) return;
+    this.commitToHistory();
+    this.engine.nextRound();
     this.syncState();
   }
 
@@ -158,6 +212,7 @@ class IboStoreManager {
    */
   public nextAge() {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.nextAge();
     this.syncState();
   }
@@ -167,6 +222,7 @@ class IboStoreManager {
    */
   public consumeAction() {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.consumeAction();
     this.syncState();
   }
@@ -176,6 +232,7 @@ class IboStoreManager {
    */
   public resolveEventIcon(icon: EventIcon) {
     if (!this.engine) return;
+    this.commitToHistory();
     this.engine.resolveEventIcon(icon);
     this.syncState();
   }

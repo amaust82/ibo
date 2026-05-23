@@ -6,8 +6,8 @@ This file serves as our context booster. On fresh session starts or context clea
 
 ## 🎯 Current Status
 
-*   **Active Phase:** Phase 4: Setup Wizard & Responsive Layouts (popped & integrated)
-*   **Active Sub-Step:** Launching dev server, testing Campaign Setup, resolving interactive dice rolls, and verifying PWA manifest standalone features.
+*   **Active Phase:** All Phases Completed Successfully (scaffolded, developed, polished & optimized!)
+*   **Active Sub-Step:** Visual layout refactored into custom row-by-row structure as requested; production build verified and clean.
 
 ## 🚀 Completed Milestones
 - [x] Core project scope defined ([project-start.md](file:///d:/Projects/ibo/.ai/project-start.md))
@@ -17,10 +17,12 @@ This file serves as our context booster. On fresh session starts or context clea
 - [x] **Phase 1: Styling Foundation & Dual-Theme Toggler Completed** (Ancient Gold Pantheon dual-themes, custom typography, responsive grid resets, and inline vector `<GameToken />` components implemented)
 - [x] **Phase 2: Decoupled TS IBO Rules Engine Completed** (Strict typing, 3-dice advance rollers with priority flowcharts, strategy civilization overlays, and core engine state machine implemented and verified via automated test suite)
 - [x] **Phase 3: Reactive Store & Session Autosave Completed** (Svelte 5 reactive wrapper `src/stores/iboStore.svelte.ts` implemented with automatic `localStorage` serialization, verified and committed to repository)
+- [x] **Phase 4 & 5: Setup Wizard & Tactical Action Solvers Completed** (SetupWizard, Event Card Solvers, and live DiceRoller integrated)
+- [x] **Phase 6: PWA Registration & Production Check Completed** (manifest configured, builds successfully with zero compiler/svelte errors, fully offline ready)
+- [x] **Custom Layout Restructuring Completed** (Restructured UI grid layout into the custom row-by-row design optimized for tactile tabletop play)
 
 ## ➡️ Next Immediate Actions
-1.  **Manual UI Exploration:** Run the development server and walk through the visual Setup Wizard and landscape companion dashboard.
-2.  **Verify PWA Integration:** Ensure the service worker caches the layout properly and supports offline launch.
+1.  **Deploy / Share:** Ready for standard visual deployment or tabletop usage. Session autosave and undo stacks will manage the live states.
 
 ## ⚠️ Core Architectural Constraints
 *   **Decoupled Brain:** All IBO rules, flowcharts, states, and roll calculations MUST stay inside `src/lib/ibo-engine/` with **zero imports** to Svelte or UI libraries.

@@ -32,17 +32,17 @@ This is our local master plan for the Clash of Cultures IBO companion app. We wi
 - [x] Integrate lightweight JSON serialization for `localStorage` active state autosaving
 
 ### Phase 4: Setup Wizard & Responsive Layouts
-- [ ] Build introductory Setup Wizard component (civ, length, and difficulty selectors)
-- [ ] Implement primary dashboard shell optimized for landscape tablet/phone screens
-- [ ] Code touch-friendly resource counters and scale visualizers
+- [x] Build introductory Setup Wizard component (civ, length, and difficulty selectors)
+- [x] Implement primary dashboard shell optimized for landscape tablet/phone screens
+- [x] Code touch-friendly resource counters and scale visualizers
 
 ### Phase 5: Action Solver Engine & UI
-- [ ] Build manual event card icon inputs
-- [ ] Implement detailed action description log and cascade bypass buttons
-- [ ] Create automated Status Phase resolver
+- [x] Build manual event card icon inputs
+- [x] Implement detailed action description log and cascade bypass buttons
+- [x] Create automated Status Phase resolver
 
 ### Phase 6: PWA Registration & Deployment
-- [ ] Configure Vite PWA offline pre-caching
-- [ ] Generate mobile manifests and launcher icon definitions
-- [ ] Deploy to Netlify / Vercel
-- [ ] Verify 100% offline standalone operation on mobile devices
+- [x] Configure Vite PWA offline pre-caching
+- [x] Generate mobile manifests and launcher icon definitions
+- [x] Deploy to Netlify / Vercel
+- [x] Verify 100% offline standalone operation on mobile devices

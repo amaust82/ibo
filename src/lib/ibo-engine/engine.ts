@@ -141,7 +141,8 @@ export class IboEngine {
       difficulty,
       civilization: civType,
       currentAge: 1,
-      currentAction: 1,
+      currentRound: 1,
+      currentAction: 0,
       maxActionsPerTurn: initialMaxActions,
       resources,
       scale,
@@ -375,8 +376,24 @@ export class IboEngine {
   public consumeAction(): void {
     if (this._state.currentAction < this._state.maxActionsPerTurn) {
       this._state.currentAction++;
-    } else {
+    }
+    if (this._state.currentAction === this._state.maxActionsPerTurn) {
       this.log(`Turn Completed. All ${this._state.maxActionsPerTurn} actions performed.`);
+    }
+  }
+
+  /**
+   * Transition to the next IBO turn/round within the current Age.
+   */
+  public nextRound(): boolean {
+    if (this._state.currentRound < 3) {
+      this._state.currentRound++;
+      this._state.currentAction = 0;
+      this.log(`--- Entered Round ${this._state.currentRound} ---`);
+      return true;
+    } else {
+      this.log('All 3 Rounds completed in current Age. Please resolve Status Phase to advance.');
+      return false;
     }
   }
 
@@ -393,7 +410,8 @@ export class IboEngine {
     }
 
     this._state.currentAge = nextAge;
-    this._state.currentAction = 1;
+    this._state.currentRound = 1;
+    this._state.currentAction = 0;
     this._state.maxActionsPerTurn = getMaxActions(this._state.difficulty, nextAge);
 
     this.log(`--- Entered Age ${nextAge} --- Max Actions: ${this._state.maxActionsPerTurn}`);
