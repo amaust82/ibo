@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { iboStore } from '../../stores/iboStore.svelte';
+  import { iboStore, type SaveSlot } from '../../stores/iboStore.svelte';
   import type { GameLength, DifficultyLevel, CivilizationType } from '../ibo-engine/types';
 
   // Wizard state with default configurations
@@ -8,7 +8,7 @@
   let selectedCiv = $state<CivilizationType>('Generic');
 
   // Descriptions for each solo civilization
-  const civDescriptions = {
+  const civDescriptions: Record<CivilizationType, { name: string; icon: string; flavor: string; trait: string }> = {
     Generic: {
       name: 'Generic Standard',
       icon: '🏛️',
@@ -18,14 +18,14 @@
     Rome: {
       name: 'Roman Empire',
       icon: '🛡️',
-      flavor: 'Militaristic dominance. Armies move swiftly. Preferred Event Action: ATTACK. Replaces standard construct with roads/forts logic.',
-      trait: 'Tactical aggression and expansion.'
+      flavor: 'Militaristic dominance. Armies move swiftly. Preferred Event Action: CONSTRUCT (ignoring exhausted lands, triggers agricultural developments).',
+      trait: 'Tactical aggression and roads expansion.'
     },
     Greece: {
       name: 'Ancient Greece',
       icon: '🏺',
-      flavor: 'Philosophical and artistic advancement. Spreads cultural influence seamlessly. Preferred Event Action: INFLUENCE.',
-      trait: 'Priority on Education and Spirituality.'
+      flavor: 'Philosophical and artistic advancement. Spreads cultural influence seamlessly. Preferred Event Action: RECRUIT (bonus ideas from Academies).',
+      trait: 'Priority on Education and Academies.'
     },
     China: {
       name: 'Imperial China',
@@ -36,8 +36,74 @@
     Vikings: {
       name: 'Norse Raiders',
       icon: '🪓',
-      flavor: 'Maritime expertise and aggressive coastal raiding. Preferred Event Action: ATTACK. Highly active in early naval navigation.',
+      flavor: 'Maritime expertise and aggressive coastal raiding. Preferred Event Action: RECRUIT. Highly active in early naval navigation and longships.',
       trait: 'Aggressive naval expansion.'
+    },
+    Aztecs: {
+      name: 'Aztecs',
+      icon: '☀️',
+      flavor: 'Militaristic captive extraction. Preferred Event Action: ATTACK. Sacrifices defeated units for resource advantages and plunders borders.',
+      trait: 'Captives and combat sacrifices.'
+    },
+    Babylonia: {
+      name: 'Babylonia',
+      icon: '📐',
+      flavor: 'Scientific and civic powerhouse. Preferred Event Action: ADVANCE. Accelerates science via Star Catalogues and Code of Laws.',
+      trait: 'Ziggurats and star observations.'
+    },
+    Carthage: {
+      name: 'Carthage',
+      icon: '🐘',
+      flavor: 'Maritime trade and powerful mercenaries. Preferred Event Action: RECRUIT. Deploys deadly Warbeasts and pirate fleets.',
+      trait: 'Warbeasts and Pirate Allies.'
+    },
+    Celts: {
+      name: 'Celts',
+      icon: '🍀',
+      flavor: 'Fierce tribal defenders and druidic influence. Preferred Event Action: ATTACK. Ignores standard movements and plunders adjacent borders.',
+      trait: 'Tribal Allies and Druidic Influence.'
+    },
+    Egypt: {
+      name: 'Egypt',
+      icon: '☥',
+      flavor: 'Monumental expansion along flood plains. Preferred Event Action: INFLUENCE. Speeds up building construction and gains VP from combat preserves.',
+      trait: 'Architecture and Embalming VPs.'
+    },
+    Huns: {
+      name: 'Huns',
+      icon: '🏹',
+      flavor: 'Highly nomadic mounted archers. Preferred Event Action: CONSTRUCT. Aggressively restricts settlement placements and plunders borders.',
+      trait: 'Nomads and Mounted Archers.'
+    },
+    India: {
+      name: 'India',
+      icon: '🕉️',
+      flavor: 'Spiritual and cultural proselytism. Preferred Event Action: INFLUENCE. Extends cultural influence range and deploys war elephants.',
+      trait: 'Proselytism and Elephants.'
+    },
+    Japan: {
+      name: 'Japan',
+      icon: '⛩️',
+      flavor: 'Feudal military shogunates. Preferred Event Action: ATTACK. Converts cultural targets and collects extra gold from agrarian advances.',
+      trait: 'Shogunate and Pottery.'
+    },
+    Maya: {
+      name: 'Maya',
+      icon: '🌴',
+      flavor: 'Architectural stelas and complex calendars. Preferred Event Action: ADVANCE. Boosts research output from constructions.',
+      trait: 'Terracing and Astronomical Calendars.'
+    },
+    Persia: {
+      name: 'Persia',
+      icon: '🦁',
+      flavor: 'Imperial banking and specialized Immortal regiments. Preferred Event Action: INFLUENCE. Generates gold during tactical movements.',
+      trait: 'Immortals and Zoroastrianism.'
+    },
+    Phoenicia: {
+      name: 'Phoenicia',
+      icon: '⛵',
+      flavor: 'Sovereign sea traders and alphabet scholars. Preferred Event Action: CONSTRUCT. Gains gold and ideas from coastal constructions.',
+      trait: 'Cedars & Dyes and Alphabet.'
     }
   };
 
@@ -49,12 +115,65 @@
     Hard: 'Maximum action density. (Age 1: 1 action, Age 2-3: 2 actions, Age 4-6: 3 actions)'
   };
 
+  let selectedTutorial = $state(false);
+
   function handleStart() {
-    iboStore.newGame(selectedLength, selectedDifficulty, selectedCiv);
+    iboStore.newGame(selectedLength, selectedDifficulty, selectedCiv, selectedTutorial);
+  }
+
+  // Visualizer cycle state
+  let isRolling = $state(false);
+
+  function handleRandomize() {
+    if (isRolling) return;
+    isRolling = true;
+    
+    const civKeys = Object.keys(civDescriptions).filter(k => k !== 'Generic') as CivilizationType[];
+    let counter = 0;
+    
+    const interval = setInterval(() => {
+      selectedCiv = civKeys[Math.floor(Math.random() * civKeys.length)];
+      counter++;
+      if (counter > 10) {
+        clearInterval(interval);
+        isRolling = false;
+        // Also log this choice
+        console.log(`Randomized to: ${selectedCiv}`);
+      }
+    }, 100);
   }
 </script>
 
 <div class="setup-container">
+  <!-- Saved Slots Section at the top -->
+  {#if iboStore.slots && iboStore.slots.length > 0}
+    <div class="wizard-card slots-card flex flex-col gap-sm" style="margin-bottom: 2rem; border-color: rgba(212, 175, 55, 0.3);">
+      <h3 style="display: flex; align-items: center; gap: 0.5rem;">📂 Resume Ongoing Solo Conquest</h3>
+      <p class="section-desc">Select and load an ongoing saved slot from your device.</p>
+      
+      <div class="slots-list" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+        {#each iboStore.slots as slot}
+          <div class="slot-item flex justify-between align-center" style="background-color: var(--bg-color); border: 1px solid var(--border-color); padding: 0.6rem 0.8rem; border-radius: var(--border-radius-md);">
+            <div class="slot-info flex flex-col" style="text-align: left;">
+              <span class="slot-name" style="font-weight: 700; color: var(--accent-gold);">{slot.name}</span>
+              <span class="slot-meta" style="font-size: 0.75rem; color: var(--text-muted);">
+                Civ: {slot.civilization} | Age: {slot.age} | Updated: {slot.lastUpdated}
+              </span>
+            </div>
+            <div class="slot-actions flex gap-xs">
+              <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.3rem 0.6rem;" onclick={() => iboStore.loadFromSlot(slot.id)}>
+                Load Save
+              </button>
+              <button class="btn btn-reset" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; background-color: var(--accent-crimson) !important;" onclick={() => { if(confirm('Delete save slot?')) iboStore.deleteSlot(slot.id); }}>
+                Delete
+              </button>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </div>
+  {/if}
+
   <div class="wizard-header">
     <span class="gold-subtitle">Campaign Setup</span>
     <h2>Establish Solo Conquest</h2>
@@ -110,10 +229,42 @@
     </div>
   </div>
 
+  <!-- Onboarding Tutorial Mode Card -->
+  <div class="wizard-card flex flex-col gap-sm" style="background: linear-gradient(135deg, var(--card-bg-elevated) 0%, rgba(212, 175, 55, 0.02) 100%); border-color: rgba(212, 175, 55, 0.15); margin-bottom: 1.5rem;">
+    <div class="flex justify-between align-center" style="width: 100%; display: flex; align-items: center; justify-content: space-between;">
+      <div style="text-align: left;">
+        <h3 style="display: flex; align-items: center; gap: 0.4rem; margin: 0; font-family: var(--font-heading); font-size: 1.15rem; color: var(--text-color);">🎓 Dynamic Mentor & Tutorial Guide</h3>
+        <p class="section-desc" style="margin: 0.15rem 0 0 0; font-size: 0.8rem; color: var(--text-muted);">Activates step-by-step guidance on your dashboard to teach IBO rules as you play.</p>
+      </div>
+      
+      <!-- Toggle button or checkbox -->
+      <button 
+        class="btn btn-secondary flex align-center gap-xs" 
+        style="border-color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--border-color)'}; color: {selectedTutorial ? 'var(--accent-gold)' : 'var(--text-color)'}; font-weight: 700; font-family: var(--font-heading); padding: 0.5rem 1rem; border-radius: var(--border-radius-md);"
+        onclick={() => selectedTutorial = !selectedTutorial}
+      >
+        {selectedTutorial ? '🎓 ONBOARDING ACTIVE' : '🎓 GUIDE INACTIVE'}
+      </button>
+    </div>
+  </div>
+
   <!-- Civilization Selection Section -->
   <div class="wizard-card civ-selection-card flex flex-col gap-md">
-    <h3>3. Opponent Civilization</h3>
-    <p class="section-desc">Select the civilization overlay that the IBO will use during the game.</p>
+    <div class="flex justify-between align-center">
+      <div>
+        <h3>3. Opponent Civilization</h3>
+        <p class="section-desc">Select the civilization overlay that the IBO will use during the game.</p>
+      </div>
+      
+      <button 
+        class="btn btn-secondary flex align-center gap-xs {isRolling ? 'rolling-anim' : ''}" 
+        style="border-color: var(--accent-gold); color: var(--accent-gold); font-weight: 700; font-family: var(--font-heading);"
+        onclick={handleRandomize}
+        disabled={isRolling}
+      >
+        🎲 {isRolling ? 'Selecting...' : 'Roll Random Civ'}
+      </button>
+    </div>
     
     <div class="civ-list-grid">
       {#each Object.entries(civDescriptions) as [key, civ]}
@@ -123,8 +274,8 @@
         >
           <div class="civ-icon-box">{civ.icon}</div>
           <div class="civ-info">
-            <span class="civ-name">{civ.name}</span>
-            <span class="civ-trait">{civ.trait}</span>
+            <span class="civ-name" style="font-size: 0.85rem; line-height: 1.2;">{civ.name}</span>
+            <span class="civ-trait" style="font-size: 0.65rem;">{civ.trait}</span>
           </div>
         </button>
       {/each}

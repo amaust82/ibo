@@ -82,4 +82,5 @@ export interface IboState {
   cities: CityState[];
   advances: string[]; // Researched advance names (e.g. "Priesthood")
   actionLog: string[];
+  tutorialMode: boolean;
 }

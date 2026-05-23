@@ -11,6 +11,93 @@
   // Custom manual logging message
   let customLogMsg = $state('');
 
+  // Save slot naming state
+  let newSlotName = $state('');
+
+  // Contextual Help tooltips visible state
+  let activeTooltip = $state<string | null>(null);
+
+  function toggleTooltip(name: string) {
+    if (activeTooltip === name) {
+      activeTooltip = null;
+    } else {
+      activeTooltip = name;
+    }
+  }
+
+  // Dynamic Solo Mentor Guide logic
+  function getMentorAdvice(state: IboState): { title: string; desc: string; step: string } {
+    const isRoundDone = state.currentAction >= state.maxActionsPerTurn;
+    
+    // Step 1: Initial Event Icon drawing
+    if (state.currentAction === 0 && !isRoundDone) {
+      return {
+        title: "Draw Event Card 🎴",
+        desc: "Draw a physical event card from the deck. Select the corresponding symbol in the **Event Card Solvers** panel to resolve it.",
+        step: "Step 1: Draw Event"
+      };
+    }
+    
+    // Step 2: Next Actions in progress
+    if (!isRoundDone) {
+      const latestLog = state.actionLog.length > 0 ? state.actionLog[state.actionLog.length - 1] : "";
+      
+      if (latestLog.includes("[ADVANCE]")) {
+        return {
+          title: "Scale Shift: Building Unlocked 🏛️",
+          desc: "Place the newly unlocked building piece (Temple, Fortress, Port, etc.) onto the lowest empty slot of the **Scale Tracker Queue** on your board.",
+          step: "Step 2: Place Building"
+        };
+      }
+      
+      return {
+        title: "Resolve Event Solver ⚡",
+        desc: "Check the current event symbol on your card. Click one of the Solver buttons (Advance, Recruit, Construct, Influence, Attack) to resolve it in Svelte and update trackers.",
+        step: "Step 2: Resolve Symbol"
+      };
+    }
+    
+    // Step 3: Turn Complete - Cleanups
+    if (isRoundDone) {
+      const maxAges = state.gameLength === 'Short' ? 4 : 6;
+      if (state.currentRound < 3) {
+        return {
+          title: "Round Complete ✨",
+          desc: "All active actions for this round are complete! Perform standard tabletop cleanup, verify all IBO pieces match the digital trackers, and then click **'Next Turn / Next Round'**.",
+          step: "Step 3: End of Round"
+        };
+      } else {
+        return {
+          title: "Age Complete - Status Phase 👑",
+          desc: `You have completed all 3 Rounds of Age ${state.currentAge}. Resolve the Status Phase on your board (IBO scores objectives, gains cards, researches free techs if applicable), then click **'Resolve Status Phase & Next Age'**.`,
+          step: "Step 3: Status Phase"
+        };
+      }
+    }
+    
+    return {
+      title: "Tactical Planning 🧠",
+      desc: "Observe the IBO's scale queues and counter limits to plan your strategic responses.",
+      step: "Guide active"
+    };
+  }
+
+  // Synchronize newSlotName with active slot name
+  $effect(() => {
+    const activeSlot = iboStore.slots.find(s => s.id === iboStore.activeSlotId);
+    if (activeSlot) {
+      newSlotName = activeSlot.name;
+    } else {
+      newSlotName = '';
+    }
+  });
+
+  function handleSaveAs() {
+    if (newSlotName.trim()) {
+      iboStore.saveCurrentGameAs(newSlotName.trim());
+    }
+  }
+
   // Toggle Theme Logic
   function toggleTheme() {
     isDark = !isDark;
@@ -151,6 +238,50 @@
       text = `🛣️ **Rome unique rule triggered**: Gained 1 free Gold after constructing a building.`;
     } else if (latestLog.includes('[China - Sprawling]')) {
       text = `🇨🇳 **China unique rule triggered**: Sprawling researched! The IBO founded a free City.`;
+    } else if (latestLog.includes('[Aztecs - Captives]')) {
+      text = `☀️ **Aztecs unique rule triggered**: IBO captured defeated units and spent them as resource currency (+1 Gold).`;
+    } else if (latestLog.includes('[Aztecs - Human Sacrifice]')) {
+      text = `☀️ **Aztecs unique rule triggered**: Human Sacrifice researched! IBO gains combat advantage when fighting in or adjacent to its temples.`;
+    } else if (latestLog.includes('[Babylonia - Ziggurats]')) {
+      text = `📐 **Babylonia unique rule triggered**: Ziggurats researched! Triggered free CONSTRUCT action and +1 Idea.`;
+    } else if (latestLog.includes('[Babylonia - Star Catalogues]')) {
+      text = `📐 **Babylonia unique rule triggered**: Star Catalogues passive triggered: gained 1 Idea.`;
+    } else if (latestLog.includes('[Carthage - Mercenaries]')) {
+      text = `🐘 **Carthage unique rule triggered**: Mercenaries active. Triggered local Barbarian Mobilization!`;
+    } else if (latestLog.includes('[Carthage - Hegemony]')) {
+      text = `🐘 **Carthage unique rule triggered**: Hegemony active. Sea lanes secured (+1 Gold).`;
+    } else if (latestLog.includes('[Celts - Druidic Influence]')) {
+      text = `🍀 **Celts unique rule triggered**: Druidic Influence researched. Solo opponent now gains cultural options.`;
+    } else if (latestLog.includes('[Celts - Tribal Warfare]')) {
+      text = `🍀 **Celts unique rule triggered**: Plundered resources after successful combat (+1 Gold).`;
+    } else if (latestLog.includes('[Egypt - Architecture]')) {
+      text = `☥ **Egypt unique rule triggered**: Architecture researched! Performing free CONSTRUCT action.`;
+    } else if (latestLog.includes('[Egypt - Embalming]')) {
+      text = `☥ **Egypt unique rule triggered**: Embalming active. Gained 1 Idea from historical combat preserves.`;
+    } else if (latestLog.includes('[Huns - Nomads]')) {
+      text = `🏹 **Huns unique rule triggered**: Nomadic setup applied. Settlements placed on Scale slots 0, 1, 3, and 5.`;
+    } else if (latestLog.includes('[Huns - Hunnic Tribes]')) {
+      text = `🏹 **Huns unique rule triggered**: Hunnic Tribes researched! Gained 1 Idea.`;
+    } else if (latestLog.includes('[India - Proselytism]')) {
+      text = `🕉️ **India unique rule triggered**: Proselytism researched! Influence Culture range increased by 1 globally.`;
+    } else if (latestLog.includes('[India - Indian Elephants]')) {
+      text = `🕉️ **India unique rule triggered**: Armed war elephants mobilized during Recruit action.`;
+    } else if (latestLog.includes('[Japan - Shogunate]')) {
+      text = `⛩️ **Japan unique rule triggered**: Shogunate government established! Tactically positioned for local defensive maneuvers.`;
+    } else if (latestLog.includes('[Japan - Pottery]')) {
+      text = `⛩️ **Japan unique rule triggered**: Gained +1 Gold from agrarian storage post advancement.`;
+    } else if (latestLog.includes('[Maya - Terracing]')) {
+      text = `🌴 **Maya unique rule triggered**: Terracing active. Terraced agriculture configured.`;
+    } else if (latestLog.includes('[Maya - Stelas]')) {
+      text = `🌴 **Maya unique rule triggered**: Monumental Stela constructed! Gained +1 Idea.`;
+    } else if (latestLog.includes('[Persia - Immortals]')) {
+      text = `🦁 **Persia unique rule triggered**: Immortals active. Gained +1 Gold from operational frontlines.`;
+    } else if (latestLog.includes('[Persia - Zoroastrianism]')) {
+      text = `🦁 **Persia unique rule triggered**: Zoroastrian spiritual overlays activated (+1 VP).`;
+    } else if (latestLog.includes('[Phoenicia - Alphabet]')) {
+      text = `⛵ **Phoenicia unique rule triggered**: Alphabet researched! Gained 1 Idea.`;
+    } else if (latestLog.includes('[Phoenicia - Cedars & Dyes]')) {
+      text = `⛵ **Phoenicia unique rule triggered**: Cedars & Dyes active. Gained +1 Gold from luxury exports.`;
     } else {
       text = `🤖 **IBO Turn Action**: ${latestLog}`;
     }
@@ -194,54 +325,113 @@
     <div class="dashboard-grid">
       
       <!-- ================= GAME STATUS ROW ================= -->
-      <!-- Game State Status Header Card -->
-      <div class="panel status-card flex flex-col gap-sm">
-        <div class="flex justify-between align-start border-bottom pb-sm">
-          <div>
-            <span class="gold-subtitle">Active Solo Match</span>
-            <h2 style="font-family: var(--font-heading); font-size: 1.35rem; margin: 0; line-height: 1.2;">
-              {iboStore.state.civilization} Empire
-            </h2>
+      <div class="status-row-grid">
+        <!-- Game State Status Header Card -->
+        <div class="panel status-card flex flex-col gap-sm" style="margin: 0;">
+          <div class="flex justify-between align-start border-bottom pb-sm">
+            <div>
+              <span class="gold-subtitle">Active Solo Match</span>
+              <h2 style="font-family: var(--font-heading); font-size: 1.35rem; margin: 0; line-height: 1.2;">
+                {iboStore.state.civilization} Empire
+              </h2>
+            </div>
+            
+            <button class="btn btn-reset" onclick={() => { if(confirm('Exit match? Your active campaign will remain saved.')) iboStore.clearGame(); }}>
+              Exit Match
+            </button>
           </div>
-          
-          <button class="btn btn-reset" onclick={() => { if(confirm('Reset match? All active state will be lost.')) iboStore.clearGame(); }}>
-            Reset Match
-          </button>
+
+          <div class="grid grid-cols-4 gap-xs status-meta-grid">
+            <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
+              <span class="meta-label" style="font-size: 0.65rem;">Diff</span>
+              <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.difficulty}</span>
+            </div>
+            <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
+              <span class="meta-label" style="font-size: 0.65rem;">Age</span>
+              <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentAge}</span>
+            </div>
+            <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
+              <span class="meta-label" style="font-size: 0.65rem;">Round</span>
+              <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentRound} / 3</span>
+            </div>
+            <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
+              <span class="meta-label" style="font-size: 0.65rem;">Action</span>
+              <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentAction} / {iboStore.state.maxActionsPerTurn}</span>
+            </div>
+          </div>
+
+          <!-- Turn / Action progression -->
+          <div class="action-progress-box flex flex-col gap-xs">
+            <div class="flex justify-between font-sm">
+              <span style="font-size: 0.75rem; font-weight: 600;">Actions resolved this Round:</span>
+              <span class="accent-color" style="font-size: 0.75rem; font-weight: 700;">
+                {iboStore.state.currentAction} / {iboStore.state.maxActionsPerTurn}
+              </span>
+            </div>
+            <div class="progress-bar-bg">
+              <div 
+                class="progress-bar-fill" 
+                style="width: {Math.min((iboStore.state.currentAction / iboStore.state.maxActionsPerTurn) * 100, 100)}%"
+              ></div>
+            </div>
+          </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-xs status-meta-grid">
-          <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
-            <span class="meta-label" style="font-size: 0.65rem;">Diff</span>
-            <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.difficulty}</span>
+        <!-- Save Slots Manager Card -->
+        <div class="panel status-card flex flex-col gap-sm" style="margin: 0; background: linear-gradient(135deg, var(--card-bg-elevated) 0%, rgba(212, 175, 55, 0.03) 100%); border-color: rgba(212, 175, 55, 0.15);">
+          <div class="flex justify-between align-start border-bottom pb-sm">
+            <div>
+              <span class="gold-subtitle">Campaign Save Slots</span>
+              <h2 style="font-family: var(--font-heading); font-size: 1.35rem; margin: 0; line-height: 1.2;">
+                Manage Sessions
+              </h2>
+            </div>
           </div>
-          <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
-            <span class="meta-label" style="font-size: 0.65rem;">Age</span>
-            <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentAge}</span>
-          </div>
-          <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
-            <span class="meta-label" style="font-size: 0.65rem;">Round</span>
-            <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentRound} / 3</span>
-          </div>
-          <div class="status-meta-item" style="padding: 0.35rem 0.15rem;">
-            <span class="meta-label" style="font-size: 0.65rem;">Action</span>
-            <span class="meta-value" style="font-size: 0.85rem;">{iboStore.state.currentAction} / {iboStore.state.maxActionsPerTurn}</span>
-          </div>
-        </div>
 
-        <!-- Turn / Action progression -->
-        <div class="action-progress-box flex flex-col gap-xs">
-          <div class="flex justify-between font-sm">
-            <span style="font-size: 0.75rem; font-weight: 600;">Actions resolved this Round:</span>
-            <span class="accent-color" style="font-size: 0.75rem; font-weight: 700;">
-              {iboStore.state.currentAction} / {iboStore.state.maxActionsPerTurn}
-            </span>
+          <!-- Current Slot Rename -->
+          <div class="flex flex-col gap-xs" style="margin-top: 0.25rem;">
+            <span class="font-sm" style="font-size: 0.75rem; font-weight: 600;">Rename / Save Current Campaign:</span>
+            <div class="flex gap-xs">
+              <input 
+                type="text" 
+                class="form-input" 
+                style="font-size: 0.8rem; padding: 0.4rem 0.6rem; flex: 1; min-height: unset; margin: 0;"
+                bind:value={newSlotName}
+                placeholder="Campaign Name..."
+              />
+              <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.4rem 1rem; white-space: nowrap;" onclick={handleSaveAs}>
+                Save Slot
+              </button>
+            </div>
           </div>
-          <div class="progress-bar-bg">
-            <div 
-              class="progress-bar-fill" 
-              style="width: {Math.min((iboStore.state.currentAction / iboStore.state.maxActionsPerTurn) * 100, 100)}%"
-            ></div>
-          </div>
+
+          <!-- Other Slots list -->
+          {#if iboStore.slots.length > 1}
+            <div class="border-top pt-xs flex flex-col gap-xxs" style="margin-top: 0.35rem; border-color: var(--border-color);">
+              <span class="font-xs font-semibold text-muted" style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 0.15rem;">LOAD OTHER SAVES:</span>
+              <div class="flex flex-col gap-xxs" style="max-height: 70px; overflow-y: auto;">
+                {#each iboStore.slots as slot}
+                  {#if slot.id !== iboStore.activeSlotId}
+                    <div class="flex justify-between align-center py-xxs font-xs" style="border-bottom: 1px dashed rgba(255,255,255,0.05); padding: 0.2rem 0;">
+                      <span class="text-truncate" style="max-width: 60%; font-weight: 500; font-size: 0.75rem; color: var(--accent-gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{slot.name}</span>
+                      <div class="flex gap-xxs">
+                        <button class="btn btn-secondary font-xs" style="padding: 0.15rem 0.4rem; min-height: unset; font-size: 0.7rem;" onclick={() => iboStore.loadFromSlot(slot.id)}>
+                          Load
+                        </button>
+                        <button class="btn btn-reset font-xs" style="padding: 0.15rem 0.4rem; min-height: unset; font-size: 0.7rem; background-color: var(--accent-crimson) !important;" onclick={() => { if(confirm('Delete save slot?')) iboStore.deleteSlot(slot.id); }}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  {/if}
+                {/each}
+              </div>
+            </div>
+          {:else}
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; text-align: center;">
+              Auto-saving actively to this slot. Create multiple named slots to play different civs!
+            </div>
+          {/if}
         </div>
       </div>
 
@@ -270,18 +460,58 @@
         </div>
       {/if}
 
+      <!-- ================= TUTORIAL MENTOR GUIDE (IF ACTIVE) ================= -->
+      {#if iboStore.state.tutorialMode}
+        {@const advice = getMentorAdvice(iboStore.state)}
+        <div class="panel mentor-guide-banner span-full flex flex-col gap-sm">
+          <div class="flex justify-between align-center border-bottom pb-xs" style="border-color: rgba(18,18,18,0.15);">
+            <span class="gold-subtitle" style="display: flex; align-items: center; gap: 0.35rem;">
+              🎓 Solo Mentor Guide ({advice.step})
+            </span>
+            <button class="btn btn-secondary" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;" onclick={() => iboStore.toggleTutorialMode()}>
+              Disable Guide
+            </button>
+          </div>
+          
+          <div class="flex align-center gap-md py-xs">
+            <div class="last-action-icon-badge" style="border-color: var(--accent-gold); font-size: 1.5rem; background-color: rgba(212,175,55,0.05);">💡</div>
+            <div class="flex flex-col" style="text-align: left; flex: 1; min-width: 0;">
+              <span class="last-action-highlight" style="color: var(--text-primary); font-size: 1.05rem; font-weight: 700;">{advice.title}</span>
+              <span class="last-action-subtext" style="color: var(--text-muted); font-size: 0.85rem; font-style: normal; margin-top: 0.25rem; line-height: 1.4;">
+                {@html advice.desc.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}
+              </span>
+            </div>
+          </div>
+        </div>
+      {/if}
+
       <!-- ================= EVENT SOLVERS & ROLLER ROW (TWO COLUMNS ON DESKTOP) ================= -->
       <div class="solvers-and-roller-row">
         <!-- Event Action Card Solver Panel -->
         <div class="panel event-solver-panel flex flex-col gap-md" style="margin: 0; height: 100%;">
-          <div class="flex justify-between align-start">
+          <div class="flex justify-between align-start" style="position: relative; width: 100%;">
             <div class="panel-header-desc">
-              <h3>Event Card Solvers</h3>
-              <p class="flavor-desc">Click the corresponding icon to resolve drawn Event Card actions.</p>
+              <h3 style="display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+                Event Card Solvers
+                <button class="tooltip-btn" onclick={() => toggleTooltip('Solvers')} aria-label="Solvers Info">?</button>
+              </h3>
+              <p class="flavor-desc" style="margin: 0.25rem 0 0 0;">Click the corresponding icon to resolve drawn Event Card actions.</p>
             </div>
             <button class="btn btn-secondary btn-undo-event" onclick={() => iboStore.undo()} style="border-color: var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem; padding: 0.35rem 0.6rem; white-space: nowrap; display: flex; align-items: center; gap: 0.25rem;">
               ↩️ Undo
             </button>
+
+            {#if activeTooltip === 'Solvers'}
+              <div class="glass-tooltip-overlay">
+                <div class="flex justify-between align-center border-bottom pb-xs" style="margin-bottom: 0.4rem; border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+                  <strong style="color: var(--accent-gold); font-size: 0.85rem; text-align: left;">🎓 Event Card Solver Guide</strong>
+                  <button class="close-tooltip-btn" onclick={() => activeTooltip = null} style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0;">&times;</button>
+                </div>
+                <p class="font-xs" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); margin: 0; text-align: left; white-space: normal;">
+                  Event cards drawn from your tabletop deck drive the solo opponent's turn. Look at the symbols at the bottom of the card and click the matching solver icon here. Svelte resolves state priority rolls automatically.
+                </p>
+              </div>
+            {/if}
           </div>
 
           <div class="grid grid-cols-3 gap-sm">
@@ -353,11 +583,26 @@
 
       <!-- ================= SECOND ROW: SCALE (FULL WIDTH) ================= -->
       <div class="panel scale-tracker-panel flex flex-col gap-md span-full">
-        <div class="flex justify-between align-center">
+        <div class="flex justify-between align-center" style="position: relative; width: 100%;">
           <div>
-            <h3 style="font-size: 1.15rem;">Scale Tracker Queue</h3>
-            <p class="flavor-desc">Slots 0 to 7. Founding/Constructing takes pieces from left to right.</p>
+            <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+              Scale Tracker Queue
+              <button class="tooltip-btn" onclick={() => toggleTooltip('Scale')} aria-label="Scale Info">?</button>
+            </h3>
+            <p class="flavor-desc" style="margin: 0.25rem 0 0 0;">Slots 0 to 7. Founding/Constructing takes pieces from left to right.</p>
           </div>
+
+          {#if activeTooltip === 'Scale'}
+            <div class="glass-tooltip-overlay">
+              <div class="flex justify-between align-center border-bottom pb-xs" style="margin-bottom: 0.4rem; border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+                <strong style="color: var(--accent-gold); font-size: 0.85rem; text-align: left;">🎓 Scale Tracker Guide</strong>
+                <button class="close-tooltip-btn" onclick={() => activeTooltip = null} style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0;">&times;</button>
+              </div>
+              <p class="font-xs" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); margin: 0; text-align: left; white-space: normal;">
+                This queue tracks settlements and unlocked buildings waiting to enter play. Take pieces from left to right when resolving founding and constructing. New advancements automatically add building structures to the lowest empty index.
+              </p>
+            </div>
+          {/if}
           
           <!-- Manual scale structure insert -->
           <div class="flex align-center gap-xs">
@@ -397,8 +642,23 @@
       </div>
 
       <!-- ================= THIRD ROW: ADVANCEMENTS (FULL WIDTH) ================= -->
-      <div class="panel tech-panel flex flex-col gap-md span-full">
-        <h3 style="font-size: 1.15rem;">Researched Advances Catalog</h3>
+      <div class="panel tech-panel flex flex-col gap-md span-full" style="position: relative;">
+        <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+          Researched Advances Catalog
+          <button class="tooltip-btn" onclick={() => toggleTooltip('Tech')} aria-label="Tech Info">?</button>
+        </h3>
+
+        {#if activeTooltip === 'Tech'}
+          <div class="glass-tooltip-overlay">
+            <div class="flex justify-between align-center border-bottom pb-xs" style="margin-bottom: 0.4rem; border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+              <strong style="color: var(--accent-gold); font-size: 0.85rem; text-align: left;">🎓 Technology Catalog Guide</strong>
+              <button class="close-tooltip-btn" onclick={() => activeTooltip = null} style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0;">&times;</button>
+            </div>
+            <p class="font-xs" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); margin: 0; text-align: left; white-space: normal;">
+              This catalog shows all advancements the solo opponent has unlocked. Advances trigger building additions to the Scale queue (e.g. Science unlocks Observatory) and activate civilization-specific passive traits in battle or founding.
+            </p>
+          </div>
+        {/if}
         <div class="tech-grid flex flex-wrap gap-xs">
           {#if iboStore.state.advances.length === 0}
             <span class="flavor-desc" style="font-style: italic;">No advances researched yet.</span>
@@ -411,8 +671,23 @@
       </div>
 
       <!-- ================= FOURTH ROW: RESOURCES (FULL WIDTH) ================= -->
-      <div class="panel resource-panel flex flex-col gap-md span-full">
-        <h3 style="font-size: 1.15rem;">Tactile Resource Counters</h3>
+      <div class="panel resource-panel flex flex-col gap-md span-full" style="position: relative;">
+        <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+          Tactile Resource Counters
+          <button class="tooltip-btn" onclick={() => toggleTooltip('Resources')} aria-label="Resources Info">?</button>
+        </h3>
+
+        {#if activeTooltip === 'Resources'}
+          <div class="glass-tooltip-overlay">
+            <div class="flex justify-between align-center border-bottom pb-xs" style="margin-bottom: 0.4rem; border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+              <strong style="color: var(--accent-gold); font-size: 0.85rem; text-align: left;">🎓 Resource Counters Guide</strong>
+              <button class="close-tooltip-btn" onclick={() => activeTooltip = null} style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0;">&times;</button>
+            </div>
+            <p class="font-xs" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); margin: 0; text-align: left; white-space: normal;">
+              Track the IBO's accumulated assets (Gold, Food, Ideas, Wood, Ore). Adjust manually with '+' and '-' to match harvesting payouts and combat costs. Resources are consumed for specific actions like advances and constructions.
+            </p>
+          </div>
+        {/if}
         
         <div class="grid grid-cols-5 gap-sm">
           {#each Object.entries(iboStore.state.resources) as [key, value]}
@@ -433,11 +708,26 @@
 
       <!-- ================= FIFTH ROW: CITIES (FULL WIDTH) ================= -->
       <div class="panel cities-panel flex flex-col gap-md span-full">
-        <div class="flex justify-between align-center">
+        <div class="flex justify-between align-center" style="position: relative; width: 100%;">
           <div>
-            <h3 style="font-size: 1.15rem;">Active Cities Tracker</h3>
-            <p class="flavor-desc">Mood determines size limits (Happy +1, Angry = 1).</p>
+            <h3 style="font-size: 1.15rem; display: flex; align-items: center; gap: 0.35rem; margin: 0;">
+              Active Cities Tracker
+              <button class="tooltip-btn" onclick={() => toggleTooltip('Cities')} aria-label="Cities Info">?</button>
+            </h3>
+            <p class="flavor-desc" style="margin: 0.25rem 0 0 0;">Mood determines size limits (Happy +1, Angry = 1).</p>
           </div>
+
+          {#if activeTooltip === 'Cities'}
+            <div class="glass-tooltip-overlay">
+              <div class="flex justify-between align-center border-bottom pb-xs" style="margin-bottom: 0.4rem; border-color: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+                <strong style="color: var(--accent-gold); font-size: 0.85rem; text-align: left;">🎓 Cities Tracker Guide</strong>
+                <button class="close-tooltip-btn" onclick={() => activeTooltip = null} style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 0;">&times;</button>
+              </div>
+              <p class="font-xs" style="font-size: 0.75rem; line-height: 1.4; color: var(--text-muted); margin: 0; text-align: left; white-space: normal;">
+                Track the IBO's cities on board. The IBO's city size matches the number of structures built in it. Angry cities are locked to size 1, ignoring existing structures and blocking construct solver actions until pacified. Happy cities get +1 effective size.
+              </p>
+            </div>
+          {/if}
           
           <!-- Founding controller -->
           <div class="flex align-center gap-xs">
@@ -541,6 +831,19 @@
     margin-top: 1rem;
     margin-bottom: 3rem;
     width: 100%;
+  }
+
+  .status-row-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  @media (max-width: 800px) {
+    .status-row-grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   .solvers-and-roller-row {
@@ -1069,5 +1372,143 @@
     color: var(--text-muted);
     margin-top: 0.2rem;
     font-style: italic;
+  }
+
+  /* Premium glassmorphic onboarding tooltips */
+  .tooltip-btn {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    padding: 0;
+    margin-left: 0.25rem;
+    vertical-align: middle;
+  }
+
+  .tooltip-btn:hover {
+    background-color: var(--accent-gold);
+    color: #ffffff;
+    box-shadow: 0 0 6px var(--accent-gold-glow);
+  }
+
+  .glass-tooltip-overlay {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--accent-gold);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 10px var(--accent-gold-glow);
+    border-radius: var(--border-radius-md);
+    padding: 0.75rem 1rem;
+    z-index: 99;
+    margin-top: 0.5rem;
+    animation: tooltipFadeIn 250ms ease-out;
+  }
+
+  :global(.theme-light) .glass-tooltip-overlay {
+    background: rgba(255, 255, 255, 0.98) !important;
+    border-color: var(--accent-gold) !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 0 6px var(--accent-gold-glow) !important;
+  }
+
+  @keyframes tooltipFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Inverted premium mentor guide banner style to stand out */
+  .mentor-guide-banner {
+    position: relative;
+    padding: 1rem 1.25rem !important;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25) !important;
+    transition: all var(--transition-normal);
+    border-left: 5px solid var(--accent-gold) !important;
+    
+    /* Inverted colors: Gold background, dark text in dark mode */
+    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-bronze) 100%) !important;
+    color: #121212 !important;
+    border-color: var(--accent-gold) !important;
+  }
+
+  .mentor-guide-banner .gold-subtitle {
+    color: #5b4512 !important; /* Dark gold subtitle for contrast */
+  }
+
+  .mentor-guide-banner .last-action-highlight {
+    color: #000000 !important;
+  }
+
+  .mentor-guide-banner .last-action-subtext {
+    color: #222222 !important;
+  }
+
+  .mentor-guide-banner .last-action-icon-badge {
+    background-color: rgba(18, 18, 18, 0.08) !important;
+    border-color: rgba(18, 18, 18, 0.15) !important;
+    box-shadow: none !important;
+  }
+
+  .mentor-guide-banner .btn-secondary {
+    border-color: rgba(18, 18, 18, 0.25) !important;
+    color: #121212 !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .mentor-guide-banner .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  /* Inverted colors for Light theme: Dark background, light text */
+  :global(.theme-light) .mentor-guide-banner {
+    background: linear-gradient(135deg, #181818 0%, #252525 100%) !important;
+    color: #f4f1ea !important;
+    border-color: var(--accent-gold) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .gold-subtitle {
+    color: var(--accent-gold) !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .last-action-highlight {
+    color: #ffffff !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .last-action-subtext {
+    color: #cccccc !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .last-action-icon-badge {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .btn-secondary {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #f4f1ea !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  :global(.theme-light) .mentor-guide-banner .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
   }
 </style>

@@ -7,7 +7,7 @@ This file serves as our context booster. On fresh session starts or context clea
 ## 🎯 Current Status
 
 *   **Active Phase:** All Phases Completed Successfully (scaffolded, developed, polished & optimized!)
-*   **Active Sub-Step:** Visual layout refactored into custom row-by-row structure as requested; production build verified and clean.
+*   **Active Sub-Step:** Save slots with custom naming and all 15 civilization overlays with randomizer integrated and verified clean in production build.
 
 ## 🚀 Completed Milestones
 - [x] Core project scope defined ([project-start.md](file:///d:/Projects/ibo/.ai/project-start.md))
@@ -20,9 +20,10 @@ This file serves as our context booster. On fresh session starts or context clea
 - [x] **Phase 4 & 5: Setup Wizard & Tactical Action Solvers Completed** (SetupWizard, Event Card Solvers, and live DiceRoller integrated)
 - [x] **Phase 6: PWA Registration & Production Check Completed** (manifest configured, builds successfully with zero compiler/svelte errors, fully offline ready)
 - [x] **Custom Layout Restructuring Completed** (Restructured UI grid layout into the custom row-by-row design optimized for tactile tabletop play)
+- [x] **Save Slots & remaining 11 Civilizations Completed** (Save slots CRUD, multi-session management, custom naming, 15 civ roster, randomizer visualizer cycle, and plain English translation directives implemented)
 
 ## ➡️ Next Immediate Actions
-1.  **Deploy / Share:** Ready for standard visual deployment or tabletop usage. Session autosave and undo stacks will manage the live states.
+1.  **Play / Deploy:** Ready for tablet and offline solo tabletop gameplay! Autosave and undo stacks will manage the live states.
 
 ## ⚠️ Core Architectural Constraints
 *   **Decoupled Brain:** All IBO rules, flowcharts, states, and roll calculations MUST stay inside `src/lib/ibo-engine/` with **zero imports** to Svelte or UI libraries.

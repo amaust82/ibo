@@ -71,9 +71,10 @@ export class IboEngine {
   constructor(
     gameLength: GameLength,
     difficulty: DifficultyLevel,
-    civilization: string
+    civilization: string,
+    tutorialMode?: boolean
   ) {
-    this.initialize(gameLength, difficulty, civilization);
+    this.initialize(gameLength, difficulty, civilization, tutorialMode);
   }
 
   /**
@@ -90,7 +91,8 @@ export class IboEngine {
   public initialize(
     gameLength: GameLength,
     difficulty: DifficultyLevel,
-    civilization: string
+    civilization: string,
+    tutorialMode: boolean = false
   ): void {
     const validCivs = [
       'Rome', 'Greece', 'China', 'Vikings', 'Aztecs', 'Babylonia', 
@@ -149,7 +151,8 @@ export class IboEngine {
       scale,
       cities: [startingCity],
       advances,
-      actionLog: ['Solo Game Initialized. Pre-researched: Farming, Mining. Scale initialized.']
+      actionLog: ['Solo Game Initialized. Pre-researched: Farming, Mining. Scale initialized.'],
+      tutorialMode
     };
 
     // Run civ-specific wizard or setup overrides

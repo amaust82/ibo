@@ -46,3 +46,11 @@ This is our local master plan for the Clash of Cultures IBO companion app. We wi
 - [x] Generate mobile manifests and launcher icon definitions
 - [x] Deploy to Netlify / Vercel
 - [x] Verify 100% offline standalone operation on mobile devices
+
+### Phase 7: Named Save Slots & All 15 Civilizations
+- [x] Add 11 remaining Monumental Edition civilization types and individual strategy handlers
+- [x] Refactor Svelte 5 reactive store to manage save slot metadata indexing and slot state serialization
+- [x] Build randomizer 🎲 visualizer cycler on civilization setup wizard
+- [x] Build active campaign named slot manager panel on the tactical dashboard
+- [x] Translate custom civilization rules alerts into plain English directives
+
