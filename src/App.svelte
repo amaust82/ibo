@@ -2,11 +2,15 @@
   import { iboStore } from './stores/iboStore.svelte';
   import GameToken from './lib/components/GameToken.svelte';
   import SetupWizard from './lib/components/SetupWizard.svelte';
+  import GameTutorial from './lib/components/GameTutorial.svelte';
   import DiceRoller from './lib/components/DiceRoller.svelte';
   import type { EventIcon, ResourceType, StructureType, CityMood, IboState } from './lib/ibo-engine/types';
 
   // Svelte 5 Runes for Theme State
   let isDark = $state(true);
+
+  // Tutorial view state (fully decoupled from game state)
+  let showTutorial = $state(false);
   
   // Custom manual logging message
   let customLogMsg = $state('');
@@ -598,9 +602,12 @@
 </header>
 
 <main class="container">
-  {#if iboStore.state === null}
+  {#if showTutorial}
+    <!-- Standalone How to Play Tutorial -->
+    <GameTutorial onExit={() => showTutorial = false} />
+  {:else if iboStore.state === null}
     <!-- Initialization Setup Wizard -->
-    <SetupWizard />
+    <SetupWizard onTutorial={() => showTutorial = true} />
   {:else}
     <!-- Active Game Tactical Dashboard (Grid with row-by-row structure) -->
     <div class="dashboard-grid">

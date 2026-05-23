@@ -2,6 +2,8 @@
   import { iboStore, type SaveSlot } from '../../stores/iboStore.svelte';
   import type { GameLength, DifficultyLevel, CivilizationType } from '../ibo-engine/types';
 
+  const { onTutorial }: { onTutorial: () => void } = $props();
+
   // Wizard state with default configurations
   let selectedLength = $state<GameLength>('Standard');
   let selectedDifficulty = $state<DifficultyLevel>('Normal');
@@ -310,6 +312,9 @@
 
   <!-- Action Launch Button -->
   <div class="launch-box">
+    <button class="btn-learn-to-play" onclick={onTutorial}>
+      📖 New to Clash of Cultures? Learn How to Play
+    </button>
     <button class="btn btn-primary btn-launch" onclick={handleStart}>
       Begin Solo Conquest
     </button>
@@ -574,6 +579,31 @@
   .launch-box {
     text-align: center;
     margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .btn-learn-to-play {
+    background: transparent;
+    border: 1px dashed var(--border-color);
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.6rem 1.5rem;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    letter-spacing: 0.02em;
+  }
+
+  .btn-learn-to-play:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background: var(--accent-gold-glow);
+    border-style: solid;
   }
 
   .btn-launch {
