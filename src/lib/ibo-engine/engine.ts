@@ -92,13 +92,14 @@ export class IboEngine {
     difficulty: DifficultyLevel,
     civilization: string
   ): void {
-    const civType =
-      civilization === 'Rome' ||
-      civilization === 'Greece' ||
-      civilization === 'China' ||
-      civilization === 'Vikings'
-        ? civilization
-        : 'Generic';
+    const validCivs = [
+      'Rome', 'Greece', 'China', 'Vikings', 'Aztecs', 'Babylonia', 
+      'Carthage', 'Celts', 'Egypt', 'Huns', 'India', 'Japan', 
+      'Maya', 'Persia', 'Phoenicia'
+    ];
+    const civType = validCivs.includes(civilization)
+      ? (civilization as any)
+      : 'Generic';
 
     this.civHandler = getCivHandler(civType);
 

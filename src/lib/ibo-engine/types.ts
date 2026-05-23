@@ -2,7 +2,10 @@ export type GameLength = 'Standard' | 'Short';
 
 export type DifficultyLevel = 'Easy' | 'Easier' | 'Normal' | 'Harder' | 'Hard';
 
-export type CivilizationType = 'Generic' | 'Rome' | 'Greece' | 'China' | 'Vikings';
+export type CivilizationType = 
+  | 'Generic' | 'Rome' | 'Greece' | 'China' | 'Vikings'
+  | 'Aztecs' | 'Babylonia' | 'Carthage' | 'Celts' | 'Egypt'
+  | 'Huns' | 'India' | 'Japan' | 'Maya' | 'Persia' | 'Phoenicia';
 
 export type ResourceType = 'Gold' | 'Food' | 'Ideas' | 'Wood' | 'Ore';
 
