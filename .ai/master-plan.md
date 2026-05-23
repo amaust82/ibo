@@ -28,8 +28,8 @@ This is our local master plan for the Clash of Cultures IBO companion app. We wi
 - [x] Write unit tests (`engine.spec.ts`) to verify engine ruleset accuracy
 
 ### Phase 3: Reactive Store & Session Autosave
-- [ ] Build Svelte Store wrapper (`src/stores/iboStore.ts`)
-- [ ] Integrate lightweight JSON serialization for `localStorage` active state autosaving
+- [x] Build Svelte Store wrapper (`src/stores/iboStore.ts`)
+- [x] Integrate lightweight JSON serialization for `localStorage` active state autosaving
 
 ### Phase 4: Setup Wizard & Responsive Layouts
 - [ ] Build introductory Setup Wizard component (civ, length, and difficulty selectors)
