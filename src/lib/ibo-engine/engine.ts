@@ -77,6 +77,14 @@ export class IboEngine {
   }
 
   /**
+   * Loads an existing state (e.g. from local storage reload).
+   */
+  public loadState(state: IboState): void {
+    this._state = state;
+    this.civHandler = getCivHandler(state.civilization);
+  }
+
+  /**
    * Initializes or resets the state to the beginning of the solo game.
    */
   public initialize(
